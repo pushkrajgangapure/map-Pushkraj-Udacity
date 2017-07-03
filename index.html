@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author">
+    <title>Hotel Search Application</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <section>
+        <div class="container">
+            <main>
+                <div class="divtop">
+                    <div class="row search-box">
+                        <div class="col-md-12 text-center">
+                            <input type="text" class="form-control" aria-label="..." placeholder="Filter hotels by typing..." data-bind="value: search, valueUpdate: 'afterkeydown'">
+                            <div class="panel-group">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" id="collapseListGroupHeading1">
+                                        <h4 class="panel-title">
+                                            <a class="" href="#collapseListGroup1" aria-controls="collapseListGroup1" data-bind="click: onHotelsListClick"> Hotels list <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> </a>&nbsp;<span class="badge" data-bind="text: filterHotelList().length"></span>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseListGroup1" aria-labelledby="collapseListGroupHeading1" data-bind="css: colPnlCls">
+                                        <ul class="list-group" data-bind="foreach: filterHotelList">
+                                            <li class="list-group-item">
+                                                <div class="card card-back-ground">
+                                                    <div class="card-block btn btn-card-bg" data-bind="click: $parent.setPlaceMarker">
+                                                        <h4 class="card-title" data-bind="text: name"></h4>
+                                                        <h6 class="card-subtitle" data-bind="text: categories[0].name"></h6>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-5">
+                                                            <img data-src="..." alt="Card image" data-bind="visible: photoVisible, attr: {src: imagePath}" class="img-thumbnail">
+                                                            <img data-src="..." data-bind="visible: !photoVisible(), attr: {src: 'http://placehold.jp/100x100.png' + name.toUpperCase() }" alt="thumbnail">'
+                                                        </div>
+                                                        <div class="col-sm-7">
+                                                            <div class="card-block">
+                                                                <p class="card-text text-left">
+                                                                    <b>Address:</b>
+                                                                    <span data-bind="text: location.formattedAddress[0]"></span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-warning" data-bind="visible: !finishedLoading">
+                            <a href="#" class="alert-link">Searching hotels near Kolhapur...</a>
+                        </div>
+                        <div class="alert alert-danger" data-bind="visible: errorText"><span data-bind="text: errorText"></span></div>
+                    </div>
+                    <div id="mapDiv" class="mapDiv">
+                        <div id="hotelmap" class="hotelmap"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+    <script>
+        var hrefVal = '';
+        var css = function() {
+            var l = document.createElement('link');
+            l.rel = 'stylesheet';
+            l.href = 'css/bootstrap.min.css';
+            var h = document.getElementsByTagName('head')[0];
+            h.parentNode.insertBefore(l, h);
+        };
+        var css1 = function() {
+            var l = document.createElement('link');
+            l.rel = 'stylesheet';
+            l.href = 'css/bootstrap-theme.min.css';
+            var h = document.getElementsByTagName('head')[0];
+            h.parentNode.insertBefore(l, h);
+        };
+        var requestAnimationFrame = requestAnimationFrame || mozRequestAnimationFrame ||
+            webkitRequestAnimationFrame || msRequestAnimationFrame;
+        if (requestAnimationFrame) {
+            requestAnimationFrame(css);
+            requestAnimationFrame(css1);
+        } else {
+            window.addEventListener('load', css);
+            window.addEventListener('load', css1);
+        }
+    </script>
+    <script src="js/lib/jquery-2.1.4.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/lib/knockout-3.4.0.js"></script>
+    <script src="js/foursquare.api.js"></script>
+    <script src="js/main.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCq9JQHDj4s6LyLtR2GfttRpF3PqSPVlFI&callback=init" onerror=mapOnLoadError() async defer></script>
+</body>
+
+</html>
