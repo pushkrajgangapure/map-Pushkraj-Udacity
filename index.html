@@ -8,6 +8,8 @@
     <meta name="author">
     <title>Hotel Search Application</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
 </head>
 
 <body>
@@ -66,32 +68,6 @@
             </main>
         </div>
     </section>
-    <script>
-        var hrefVal = '';
-        var css = function() {
-            var l = document.createElement('link');
-            l.rel = 'stylesheet';
-            l.href = 'css/bootstrap.min.css';
-            var h = document.getElementsByTagName('head')[0];
-            h.parentNode.insertBefore(l, h);
-        };
-        var css1 = function() {
-            var l = document.createElement('link');
-            l.rel = 'stylesheet';
-            l.href = 'css/bootstrap-theme.min.css';
-            var h = document.getElementsByTagName('head')[0];
-            h.parentNode.insertBefore(l, h);
-        };
-        var requestAnimationFrame = requestAnimationFrame || mozRequestAnimationFrame ||
-            webkitRequestAnimationFrame || msRequestAnimationFrame;
-        if (requestAnimationFrame) {
-            requestAnimationFrame(css);
-            requestAnimationFrame(css1);
-        } else {
-            window.addEventListener('load', css);
-            window.addEventListener('load', css1);
-        }
-    </script>
     <script src="js/lib/jquery-2.1.4.min.js"></script>
     <script src="js/lib/bootstrap.min.js"></script>
     <script src="js/lib/knockout-3.4.0.js"></script>

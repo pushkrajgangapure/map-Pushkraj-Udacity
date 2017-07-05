@@ -9,14 +9,14 @@ function init() {
 var OPEN_CONSTANT = 'panel-collapse pre-scrollable collapse';
 var CLOSE_CONSTANT = 'panel-collapse pre-scrollable collapse in';
 
-var viewModel = function() {
+var ViewModel = function() {
     'use strict';
     var mapObject = this;
     mapObject.hotelLocation = ko.observableArray([]);
-
     mapObject.finishedLoading = ko.observable(false);
     mapObject.error = ko.observable(false);
     mapObject.errorText = ko.observable('');
+
     mapObject.location = {
         latitude: 16.714994,
         longitude: 74.460267
@@ -36,7 +36,10 @@ var viewModel = function() {
         mapObject.mapCard = new google.maps.InfoWindow({
             maxWidth: 200
         });
+
     };
+
+    mapObject.mapMarkers = ko.observableArray([]);
 
     mapObject.setPlaceMarker = function(selectedPlace) {
         var position = mapObject.filterHotelList().indexOf(selectedPlace);
@@ -62,10 +65,11 @@ var viewModel = function() {
                         loc.imagePath(photo.prefix + '100x100' + photo.suffix);
                     else
                         loc.imagePath("http://placehold.jp/100x100.png");
-                });
+                }, mapObject.errorFunction);
             });
             mapObject.hotelLocation(hotelLocation);
-        });
+            mapObject.createMarkers(mapObject.filterHotelList());
+        }, mapObject.errorFunction);
     };
 
     mapObject.createMarkers = function(data) {
@@ -89,6 +93,7 @@ var viewModel = function() {
                 mapObject.mapMarkers[i].setMap(this.map);
                 boundaries.extend(new google.maps.LatLng(location.lat, location.lng));
                 placesArray[i].boundaries = boundaries;
+                placesArray[i].marker = marker;
                 marker.addListener('click', mapObject.onMapMarkerClick(marker, placesArray[i]));
             }
             this.map.setCenter(boundaries.getCenter());
@@ -124,17 +129,13 @@ var viewModel = function() {
 
     mapObject.filterHotelList = ko.computed(function() {
         var userSearchString = mapObject.search().toUpperCase();
-        if (!userSearchString) {
-            return mapObject.hotelLocation();
-        } else {
-            return ko.utils.arrayFilter(mapObject.hotelLocation(), function(item) {
-                return item.name.toUpperCase().indexOf(userSearchString) !== -1;
-            });
-        }
-    });
-
-    mapObject.filterHotelList.subscribe(function() {
-        mapObject.createMarkers(mapObject.filterHotelList());
+        return ko.utils.arrayFilter(mapObject.hotelLocation(), function(item) {
+            var match = item.name.toUpperCase().indexOf(userSearchString) !== -1;
+            if (item.marker) {
+                item.marker.setVisible(match);
+            }
+            return match;
+        });
     });
 
     mapObject.resetAllMarkers = function() {
@@ -154,16 +155,20 @@ var viewModel = function() {
 
     mapObject.onMapMarkerClick = function(mapMarker, loc) {
         return function() {
-            mapMarker.setAnimation(google.maps.Animation.DROP);
-            window.setTimeout(function() {
-                mapMarker.setAnimation("");
-            }, 5000);
+            mapObject.animateMarkers(mapMarker, loc);
             mapObject.createMapMarkerCard(mapMarker, loc);
-
         };
     };
 
+    mapObject.animateMarkers = function(mapMarker, loc) {
+        mapMarker.setAnimation(google.maps.Animation.DROP);
+        window.setTimeout(function() {
+            mapMarker.setAnimation("");
+        }, 5000);
+    };
+
     mapObject.onSelectClick = function(mapMarker, loc) {
+        mapObject.animateMarkers(mapMarker, loc);
         mapObject.createMapMarkerCard(mapMarker, loc);
     };
 
@@ -178,6 +183,10 @@ var viewModel = function() {
         return html;
     };
 
+    mapObject.errorFunction = function(error) {
+        mapObject.errorText(error);
+    };
+
 };
 
 function mapOnLoadError() {
@@ -185,11 +194,7 @@ function mapOnLoadError() {
     model.errorText("Can not load google maps, please try reloading the page");
 }
 
-
-
-var model = new viewModel();
-
-
+var model = new ViewModel();
 
 $(document).ready(function() {
     ko.applyBindings(model);

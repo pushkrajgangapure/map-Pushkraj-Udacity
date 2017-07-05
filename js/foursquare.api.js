@@ -30,16 +30,9 @@ apis.foursquare = {
                     if (success) {
                         success(data.response[resource]);
                     }
-                } else {
-                    if (error) {
-                        error({
-                            errorType: information.errorType,
-                            errorDetail: information.errorDetail
-                        });
-                    }
                 }
-            }).fail(function(error) {
-                console.log('Error Occurred');
+            }).fail(function(errors) {
+                error('Error getting Data from FourSquare API. Please try again later');
             });
     }
 };
